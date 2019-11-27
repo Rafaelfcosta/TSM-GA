@@ -1,4 +1,4 @@
-let PLACES_AMOUNT = 12;
+let PLACES_AMOUNT = 10;
 let places = [];
 
 let bestDistance = Infinity;
@@ -28,7 +28,6 @@ function setup() {
         places[i] = point;
         order[i] = i;
     }
-
     for (let i = 0; i < popSize; i++) {
         population[i] = order.slice();
         shuffle(population[i], true);
@@ -144,9 +143,10 @@ function normalizeFitness() {
 function nextGen() {
     let newPop = [];
     for (let i = 0; i < population.length; i++) {
-        let order = pickOne(population, fitness);
-        mutate(order);
-        newPop[i] = order;
+        // let order = pickOne(population, fitness);
+        // mutate(order);
+        // newPop[i] = order;
+        newPop[i] = crossOver();
     }
     population = newPop;
     gen++
@@ -168,4 +168,29 @@ function mutate(order) {
     let iA = floor(random(order.length));
     let iB = floor(random(order.length));
     swap(order, iA, iB);
+}
+
+function crossOver() {
+    let order1 = pickOne(population, fitness);
+    let order2 = pickOne(population, fitness);
+
+    var start = floor(random(order1.length));
+    var end = floor(random(start + 1, order1.length + 1));
+
+    var neworder = order1.slice(start, end);
+
+    var leftover = order1.length - neworder.length;
+
+    var count = 0;
+    var i = 0;
+    
+    while (count < leftover) {
+        var city = order2[i];
+        if (!neworder.includes(city)) {
+            neworder.push(city);
+            count++;
+        }
+        i++;
+    }
+    return neworder;
 }
