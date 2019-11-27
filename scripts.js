@@ -1,11 +1,11 @@
-let PLACES_AMOUNT = 10;
+let PLACES_AMOUNT = 12;
 let places = [];
 
 let bestDistance = Infinity;
 let bestSoFar = [];
 
 let population = [];
-let popSize = 500;
+let popSize = 300;
 let fitness = [];
 
 let gen = 0;
@@ -14,7 +14,7 @@ let bestGen = 0;
 var minDist = Infinity;
 var bestNow;
 
-let start = false;
+let flag = false;
 
 function setup() {
     marker = loadImage('assets/ping.png');
@@ -47,7 +47,7 @@ function draw() {
     strokeWeight(5);
     textSize(32);
     text('Current gen: ' + gen, 10, 30);
-    text('Best path gen: ' + bestGen, 10, 620);
+    text('Best path gen: ' + bestGen, 10, 635);
 
     calcFitness();
     normalizeFitness();
@@ -73,7 +73,18 @@ function draw() {
         vertex(places[pos].x, places[pos].y);
     }
     endShape();
-    
+
+    if (flag) {
+        for (let i = 0; i < bestSoFar.length; i++) {
+            let pos = bestSoFar[i]
+            fill(0)
+            stroke(255);
+            strokeWeight(2);
+            textSize(32);
+            text(pos, places[pos].x + 15, places[pos].y + 10);
+        }
+    }
+
 }
 
 function swap(a, i, j) {
@@ -82,14 +93,9 @@ function swap(a, i, j) {
     a[j] = temp;
 }
 
-// function mouseClicked() {
-//     let newPoint = createVector(pmouseX, pmouseY);
-//     places.push(newPoint);
-
-//     if(pmouseX > 0 && pmouseX < 50 && pmouseY > 0 && pmouseY < 50){
-//         start = true;
-//     }
-// }
+function mouseClicked() {
+    flag = !flag;
+}
 
 function calcDistance(points, order) {
     let sum = 0;
@@ -111,6 +117,8 @@ function calcFitness() {
             bestDistance = d;
             bestSoFar = population[i];
             bestGen = gen;
+
+            console.log(bestSoFar);
         }
 
         if (d < minDist) {
